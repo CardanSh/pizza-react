@@ -1,9 +1,12 @@
 import Catalog from "./components/Catalog"
 import Header from "./components/Header"
 import { useState, useEffect } from "react"
+import Modal from "./components/Modal";
 
 function App() {
   const [productList, setProductList] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [product, setProduct] = useState({});
   useEffect(loadProducts, []);
 
   function loadProducts() {
@@ -16,10 +19,24 @@ function App() {
       })
   }
 
+  function openModal(id) {
+    const findProduct = productList.find((product) => product.id == id)
+    if(findProduct != null) {
+      setProduct(findProduct);
+    }
+
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
+
   return (
     <>
       <Header />
-      <Catalog list={productList} />
+      <Catalog openModal={openModal} list={productList} />
+      {(isModalOpen) ? <Modal product={product} closeModal={closeModal} /> : <></>}
     </>
   )
 }
